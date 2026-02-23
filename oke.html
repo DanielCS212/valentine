@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Message</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff; 
+            background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        #card {
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(8px);
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-size: 22px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100px;
+            position: relative;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { background-color: #eee; color: #555; }
+
+        .emoji {
+            position: absolute;
+            pointer-events: none;
+            z-index: 200;
+            font-size: 35px;
+            animation: floatUp 3s forwards linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body id="body" onload="spawnEmoji('❓')"> <div id="card">
+        <div id="content">
+            <h1 id="mainText">Do you love me? ❤️</h1>
+            <div class="btn-container" id="btnWrapper">
+                <button id="yesBtn" onclick="action('yes')">Yes</button>
+                <button id="noBtn" onclick="action('no')">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let step = 0;
+        const mainText = document.getElementById('mainText');
+        const body = document.getElementById('body');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+
+        function action(type) {
+            if (type === 'yes') {
+                celebrate();
+                return;
+            }
+
+            step++;
+
+            if (step === 1) {
+                mainText.innerText = "Lho, yakin?? 🥺";
+                updateBg('really.jpg'); 
+                spawnEmoji('😳'); 
+                moveButton();
+            } 
+            else if (step === 2) {
+                mainText.innerText = "Pikirin lagi deh... 🤔";
+                updateBg('ngambek.jpg');
+                spawnEmoji('🤔'); 
+                yesBtn.style.transform = "scale(1.5)";
+                moveButton();
+            } 
+            else if (step >= 3) {
+                noBtn.style.display = 'none';
+                mainText.innerText = "Gak ada alasan buat bilang no! 😜";
+                updateBg('ya.jpg');
+                spawnEmoji('😜'); 
+                yesBtn.style.transform = "scale(2.2)";
+            }
+        }
+
+        function updateBg(imgName) {
+            body.style.backgroundImage = `url('${imgName}')`;
+            body.style.backgroundSize = "contain"; 
+            body.style.backgroundPosition = "center";
+        }
+
+        function moveButton() {
+            const wrapper = document.getElementById('btnWrapper');
+            const maxX = wrapper.clientWidth - noBtn.clientWidth;
+            const maxY = wrapper.clientHeight - noBtn.clientHeight;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        function spawnEmoji(icon) {
+            for(let i=0; i<20; i++) {
+                setTimeout(() => {
+                    const e = document.createElement('div');
+                    e.className = 'emoji';
+                    e.innerText = icon;
+                    if(icon === '❓') e.style.color = 'red'; 
+                    
+                    e.style.left = Math.random() * 100 + 'vw';
+                    e.style.top = '90vh';
+                    e.style.fontSize = (Math.random() * 20 + 25) + 'px';
+                    document.body.appendChild(e);
+                    setTimeout(() => e.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        function celebrate() {
+            updateBg('cinta.jpg');
+            document.getElementById('content').innerHTML = `
+                <h1 style="font-size: 35px;">YAY! 🥰</h1>
+                <p style="font-weight: bold; color: #ff4d6d;">I Love You Too!</p>
+            `;
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'emoji';
+                heart.innerText = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 3000);
+            }, 100);
+        }
+    </script>
+</body>
+</html>
